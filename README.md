@@ -429,6 +429,32 @@ el driver del sensor.
 `obstacle_memory()` guarda el último `r_b` y lo propaga con `r_b ← r_b − (v + ω×r_b)·Δt` mientras el
 obstáculo no se ve, hasta `t_forget` segundos. Solo usa `v` y `w`.
 
+### Evasión: con filtro vs sin filtro (modelo cuaternión)
+
+Mismos obstáculos, misma referencia. Izquierda: NMPC solo. Derecha: NMPC + CBF.
+
+| Sin filtro (`opcion = "NMPC"`) | Con filtro (`opcion = "CBF"`) |
+|---|---|
+| ![](results/nocbf/4_distance.png) | ![](results/cbf/4_distance.png) |
+| Distancia a cada obstáculo: cruza `d_s` y `r_obs`, choca. | Nunca baja de `d_s = 1.0 m`. |
+| ![](results/nocbf/6_xy.png) | ![](results/cbf/6_xy.png) |
+| Vista superior: pasa por el centro de los obstáculos. | Rodea las esferas (proyección 2D; la evasión es 3D). |
+| ![](results/nocbf/8_side3d.jpg) | ![](results/cbf/8_side3d.jpg) |
+| Vistas x-z, y-z y 3D. | Vistas x-z, y-z y 3D. |
+| ![](results/nocbf/5_control.png) | ![](results/cbf/5_control.png) |
+| `u_safe = u_nmpc`. | `u_safe` se separa de `u_nmpc` solo cuando la restricción está activa. |
+
+Lo que ve la cámara con filtro (rango, bearing, visible/conocido por obstáculo):
+
+![](results/cbf/7_camera.png)
+
+### Evasión: modelo Euler
+
+| Sin filtro | Con filtro |
+|---|---|
+| ![](results/nocbf_euler/4_distance.png) | ![](results/cbf_euler/4_distance.png) |
+| ![](results/nocbf_euler/8_side3d.jpg) | ![](results/cbf_euler/8_side3d.jpg) |
+
 ### Resultados de referencia (3 obstáculos sobre la trayectoria, r_obs = 0.4 m, d_s = 1.0 m)
 
 | Variante | dist. mín. obs 1 | obs 2 | obs 3 |

@@ -3,6 +3,7 @@ from acados_template import AcadosModel
 import casadi as ca
 import scipy.linalg
 import numpy as np
+import os
 import time
 import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
@@ -161,11 +162,11 @@ def main():
         acados_ocp_solver.set(stage, "u", np.zeros((nu,)))
 
     Error = np.zeros((3, t.shape[0] - N_prediction), dtype=np.double)
+    solver_status = np.zeros(t.shape[0] - N_prediction, dtype=int)
 
     for k in range(0, t.shape[0] - N_prediction):
         tic = time.time()
 
-        print(xref[3:7, k])
         Error[:, k] = xref[0:3, k] - x[0:3, k]
 
         acados_ocp_solver.set(0, "lbx", x[:, k])
@@ -176,6 +177,9 @@ def main():
         acados_ocp_solver.set(N_prediction, "p", xref[:, k + N_prediction])
 
         status = acados_ocp_solver.solve()
+        solver_status[k] = status
+        if status != 0:
+            print(f"acados solver returned status {status} at step {k}")
 
         for i in range(N_prediction):
             simX[:, i] = acados_ocp_solver.get(i, "x")
@@ -199,14 +203,16 @@ def main():
 
     send_control([0, 0, 0, 0])
 
-    fig1 = plot_pose(x, xref, t)
-    fig1.savefig("1_pose.png")
-    fig2 = plot_error(Error, t)
-    fig2.savefig("2_error_pose.png")
-    fig3 = plot_time(t_sample, delta_t, t)
-    fig3.savefig("3_Time.png")
+    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "baseline")
+    os.makedirs(out_dir, exist_ok=True)
+    plot_pose(x, xref, t).savefig(os.path.join(out_dir, "1_pose.png"))
+    plot_error(Error, t).savefig(os.path.join(out_dir, "2_error_pose.png"))
+    plot_time(t_sample, delta_t, t).savefig(os.path.join(out_dir, "3_Time.png"))
+    print(f"Figures saved in {out_dir}")
 
     print(f'Mean iteration time: {1000 * np.mean(delta_t):.1f}ms -- {1 / np.mean(delta_t):.0f}Hz')
+
+    return x, xref, u_control, delta_t, Error, solver_status, t
 
 
 if __name__ == '__main__':

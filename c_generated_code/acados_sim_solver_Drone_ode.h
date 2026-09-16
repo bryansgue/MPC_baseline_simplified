@@ -54,6 +54,7 @@ typedef struct Drone_ode_sim_solver_capsule
     sim_opts *acados_sim_opts;
     sim_config *acados_sim_config;
     void *acados_sim_dims;
+    void *acados_sim_mem;
 
     /* external functions */
     // ERK
@@ -61,12 +62,14 @@ typedef struct Drone_ode_sim_solver_capsule
     external_function_param_casadi * sim_vde_adj_casadi;
     external_function_param_casadi * sim_expl_ode_fun_casadi;
     external_function_param_casadi * sim_expl_ode_hess;
+    external_function_param_casadi * sim_expl_vde_forw_p;
 
     // IRK
     external_function_param_casadi * sim_impl_dae_fun;
     external_function_param_casadi * sim_impl_dae_fun_jac_x_xdot_z;
     external_function_param_casadi * sim_impl_dae_jac_x_xdot_u_z;
     external_function_param_casadi * sim_impl_dae_hess;
+    external_function_param_casadi * sim_impl_dae_jac_p;
 
     // GNSF
     external_function_param_casadi * sim_gnsf_phi_fun;
@@ -90,7 +93,7 @@ ACADOS_SYMBOL_EXPORT sim_out * Drone_ode_acados_get_sim_out(Drone_ode_sim_solver
 ACADOS_SYMBOL_EXPORT void * Drone_ode_acados_get_sim_dims(Drone_ode_sim_solver_capsule *capsule);
 ACADOS_SYMBOL_EXPORT sim_opts * Drone_ode_acados_get_sim_opts(Drone_ode_sim_solver_capsule *capsule);
 ACADOS_SYMBOL_EXPORT sim_solver * Drone_ode_acados_get_sim_solver(Drone_ode_sim_solver_capsule *capsule);
-
+ACADOS_SYMBOL_EXPORT void * Drone_ode_acados_get_sim_mem(Drone_ode_sim_solver_capsule *capsule);
 
 ACADOS_SYMBOL_EXPORT Drone_ode_sim_solver_capsule * Drone_ode_acados_sim_solver_create_capsule(void);
 ACADOS_SYMBOL_EXPORT int Drone_ode_acados_sim_solver_free_capsule(Drone_ode_sim_solver_capsule *capsule);

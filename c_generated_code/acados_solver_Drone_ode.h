@@ -99,6 +99,7 @@ typedef struct Drone_ode_solver_capsule
     // dynamics
 
     external_function_external_param_casadi *expl_vde_forw;
+    external_function_external_param_casadi *expl_vde_forw_p;
     external_function_external_param_casadi *expl_ode_fun;
     external_function_external_param_casadi *expl_vde_adj;
 
@@ -172,7 +173,6 @@ ACADOS_SYMBOL_EXPORT int Drone_ode_acados_setup_qp_matrices_and_factorize(Drone_
 ACADOS_SYMBOL_EXPORT int Drone_ode_acados_free(Drone_ode_solver_capsule * capsule);
 ACADOS_SYMBOL_EXPORT void Drone_ode_acados_print_stats(Drone_ode_solver_capsule * capsule);
 ACADOS_SYMBOL_EXPORT int Drone_ode_acados_custom_update(Drone_ode_solver_capsule* capsule, double* data, int data_len);
-
 
 ACADOS_SYMBOL_EXPORT ocp_nlp_in *Drone_ode_acados_get_nlp_in(Drone_ode_solver_capsule * capsule);
 ACADOS_SYMBOL_EXPORT ocp_nlp_out *Drone_ode_acados_get_nlp_out(Drone_ode_solver_capsule * capsule);
